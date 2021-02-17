@@ -34,6 +34,8 @@ Note that I sourced the environment twice. That's no problem and it does not get
 
 Instructions below are for Mac/Unix, but will in general be the same for windows because typically all that is needed ar Python package installs.
 
+
+
 **NLTK**
 
 [http://www.nltk.org/install.html](http://www.nltk.org/install.html)
@@ -55,6 +57,8 @@ $> python
 >>> nltk.download()
 ```
 
+
+
 **TextBlob**
 
 [https://textblob.readthedocs.io/en/dev/](https://textblob.readthedocs.io/en/dev/)
@@ -68,11 +72,84 @@ $> python -m textblob.download_corpora
 
 TextBlob uses NLTK. You may note that installation and downloading is rather quick if you already have NLTK and its corpora installed. The data downloaded are: brown, punkt, wordnet, averaged_perceptron_tagger, conll2000 and movie_reviews.
 
+Check the installation with the code listed at the top of [https://textblob.readthedocs.io/en/dev/](https://textblob.readthedocs.io/en/dev/).
+
+
+
 **Polyglot**
 
 [https://polyglot.readthedocs.io/en/latest/
 
-Could not install, running into problems with installing the icu dependencies.
+This may be a hard one and any problems most likely are with having ICU (International Components for Unicod) installed properly. The instructions above just do a pip install of polyglot and an apt-get install of numpy, and I think it forgets to mention to also pip install the pyicu package.
+
+For me, installing pyicu always ended in dependency tears, but the following is what seems to work for at least some people (taken from [https://dzone.com/articles/python-polyglot-modulenotfounderror-no-module-name](https://dzone.com/articles/python-polyglot-modulenotfounderror-no-module-name)):
+
+```bash
+$> brew uninstall --ignore-dependencies icu4c
+$> brew install icu4c
+$> export ICU_VERSION=67.1
+$> export PYICU_INCLUDES=/usr/local/Cellar/icu4c/67.1/include
+$> export PYICU_LFLAGS=-L/usr/local/Cellar/icu4c/67.1/lib
+$> pip install pyicu
+$> pip install pycld2
+$> pip install morfessor
+```
+
+After this you can start python and check polyglot by trying the language detection module as described in  [https://polyglot.readthedocs.io/en/latest/Detection.html](https://polyglot.readthedocs.io/en/latest/Detection.html). 
+
+<u>Polyglot with Docker</u>
+
+What eventually worked for me is to use Docker. Try these instructions if you have Docker installed, they are a simplified version of the instructions at [https://forum.codeselfstudy.com/t/how-to-install-and-run-the-polyglot-package-python-in-docker/2031](https://forum.codeselfstudy.com/t/how-to-install-and-run-the-polyglot-package-python-in-docker/2031). 
+
+First create a directory `polyglot` (or any other name you want to use) and add two files: `Dockerfile` and `requirements.txt`. The contents of the `Dockerfile` should be
+
+```dockerfile
+FROM continuumio/anaconda3
+
+RUN apt-get update && apt-get install -qq -y \                                                                            
+    build-essential libpq-dev vim --no-install-recommends
+
+COPY ./ ./app
+WORKDIR ./app
+
+RUN pip install -r requirements.txt
+```
+
+And the contents of `requirements.txt` should be
+
+```
+numpy
+pycld2
+morfessor
+pyicu
+polyglot
+flask
+Flask-Cors
+gunicorn
+```
+
+After this you build a Docker image:
+
+```bash
+$> cd polyglot
+$> docker build -t polyglot .
+```
+
+This will take a little while (5-15 minutes), but after that you can open a Docker container and you will have access to polyglot:
+
+```bash
+$> docker run --rm -it polyglot bash
+```
+
+You will end up in a bash shell on the container with a somewhat different prompt then you are used to:
+
+```
+(base) root@88dc22938688:/app# 
+```
+
+You can start python and check the language detection as described in  [https://polyglot.readthedocs.io/en/latest/Detection.html](https://polyglot.readthedocs.io/en/latest/Detection.html). 
+
+
 
 **spaCy**
 
@@ -83,16 +160,5 @@ $> pip install spacy
 $> python -m spacy download en_core_web_sm
 ```
 
-**Gensim**
-
-https://pypi.org/project/gensim/
-
-](https://spacy.io/)
-
-```bash
-$> pip install gensim
-$> python -m spacy download en_core_web_sm
-```
-
-Many if the links on the PyPI pages are broken, for a simple example see [https://radimrehurek.com/gensim/auto_examples/core/run_core_concepts.html#sphx-glr-auto-examples-core-run-core-concepts-py](https://radimrehurek.com/gensim/auto_examples/core/run_core_concepts.html#sphx-glr-auto-examples-core-run-core-concepts-py).
+Try spaCy with the code listed on [https://spacy.io/](https://spacy.io/)
 
