@@ -1,0 +1,9 @@
+numpy
+pycld2
+morfessor
+pyicu
+polyglot
+
+flask
+Flask-Cors
+gunicorn

@@ -47,7 +47,7 @@ $> pip install nltk
 $> pip install numpy
 ```
 
-If you don't do this in the environment you may want to consider using the `--user` option. The example on the NLTK site also uses the `-U` option which upgrades all packages to the newest version.
+If you don't do this in the virtual environment you may want to consider using the `--user` option. The example on the NLTK site also uses the `-U` option which upgrades all packages to the newest version.
 
 Check the installation and download data if you want:
 
