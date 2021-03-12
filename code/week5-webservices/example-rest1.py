@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
@@ -10,25 +10,21 @@ def index():
         some_json = request.get_json()
         return jsonify({"message": some_json['message']}), 201
 
-@app.route("/multi/<int:num>", methods=['GET'])
-def multiply(num):
-    return jsonify({"result": num * 10})
-    
+@app.route("/multi/<int:num1>,<int:num2>", methods=['GET'])
+def multiply(num1, num2):
+    return str({"result": num1 * num2})
+    return jsonify({"result": num1 * num2})
 
 if __name__ == '__main__':
     app.run(debug=True)
 
-
 """
 
-https://www.youtube.com/watch?v=s_ht4AKnWZg
+$ curl -i http://127.0.0.1:5000/hello        # prints { "message": "Hello" }
+$ curl -i http://127.0.0.1:5000/multi/10,10  # prints { "result": 100 }
 
-$ curl http://127.0.0.1:5000/hello                # prints { "message": "Hello" }
-
-$ curl -v -H "Content-Type: application/json" -X POST -d '{"message": "Howdy"}' http://127.0.0.1:5000/hello
-
-$ curl http://127.0.0.1:5000/multi/10             # prints { "result": 100 }
-
-$ curl http://127.0.0.1:5000/multi/ten            # 404 URL not found error
+$ curl \
+    -i -H "Content-Type: application/json" -X POST -d '{"message": "Howdy"}' \
+    http://127.0.0.1:5000/hello
 
 """
