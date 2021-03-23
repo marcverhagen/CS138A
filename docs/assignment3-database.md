@@ -21,7 +21,7 @@ For this assignment we look only at the website. You should take your existing c
 In order to do this you need to take the output from the NER component which was an XML string, and parse it to extract the entity texts. The easiest way to do that is to install the Beautiful Soup package.
 
 ```bash
-$ pip install beautifulsoup4
+$> pip install beautifulsoup4
 ```
 
 And then use it to extract the text
